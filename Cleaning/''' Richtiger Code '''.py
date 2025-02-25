@@ -62,14 +62,54 @@ print(data.head())
 print(data.loc[5])
 '''
 
+# Kapitel 2: Datentypen und Columnsnames
+
+
+'''
+#'Datentypen umwandeln'
+def change_d_types(
+    df: pd.DataFrame,
+    dtypes_map: dict[str, str],
+) -> pd.DataFrame:
+    """Change data types of columns in DataFrame.
+
+    Args:
+    ----
+    df : pd.DataFrame
+        DataFrame to change data types in.
+    dtypes_map : dict
+        Dictionary with column names as keys and new data types as values.
+
+    Returns:
+    -------
+    pd.DataFrame
+        DataFrame with changed data types.
+
+    """
+    return df.astype(dtypes_map, errors="raise")
+
+
+
+### das ist hier eine angepasste version der dtypes funktion die die datenrtypen iwie besser umgeht. (???)
+
+
+def change_d_types(
+    df: pd.DataFrame,
+    dtypes_map: dict[str, str],
+) -> pd.DataFrame:
+    """Change data types of columns in DataFrame."""
+    # Stelle sicher, dass alle Datumswerte richtig konvertiert werden
+    for col, dtype in dtypes_map.items():
+        if dtype == 'datetime64[ns]':  # Überprüfen, ob der Zieltyp datetime ist
+            df[col] = pd.to_datetime(df[col], errors='coerce')
+        else:
+            df[col] = df[col].astype(dtype, errors='raise')
+    return df
 
 
 
 
-
-
-
-#Kapitel 2: Neue Variabeln erstellen und datentypen umstellen und 
+#Kapitel 3: Neue Variabeln erstellen und datentypen umstellen und 
 
 
 '''
@@ -77,8 +117,6 @@ print(data.loc[5])
 ### Erstellung der year Variabel
 
 
-
-import pandas as pd
 
 def generate_year_column(df, date_column):
     """
@@ -130,10 +168,6 @@ def calculate_age(df, year_column, birth_year_column):
 
 
 """ Verwendung der Funktion # Beispiel DataFrame
-df = pd.DataFrame({
-    'begepi': ['2000-01-01', '2005-06-15', '2010-03-20']  # Beispielwerte
-})
-
 # Die Funktion aufrufen, um die 'year' Spalte zu generieren
 df = generate_year_column(df, 'begepi')
 
@@ -224,12 +258,41 @@ def rename_columns(
 
 
 '''
-# Kapitel 3: splitten & ... 
+# Kapitel 4: splitten & ... 
 
 # Splitten der Daten
+def split_spells_in_one_function(df, persnr_col='persnr_siab_r', spell_col='spell', start_col='begepi', end_col='endepi', gebjahr_col='gebjahr'):
+    df = df.sort_values(by=[persnr_col, spell_col])
+
+    # Schritt 2: Berechnung der Anzahl der Jahre, die ein Spell abdeckt
+    df['span_year'] = (df[end_col].dt.year - df[start_col].dt.year + 1)
+    # Der berechnete Wert wird in einer neuen Spalte des DataFrames gespeichert, die den Namen span_year trägt.
+    # Die Spalte span_year enthält nun für jede Zeile im DataFrame die Anzahl der Jahre, die der Spell abdeckt.
+
+    # Schritt 3: Expandieren des DataFrames für jeden Jahrgang
+    df_expanded = df.loc[df.index.repeat(df['span_year'])].reset_index(drop=True)
+    # Schritt 4: Start- und Enddaten für die neuen Zeilen anpassen
+    df_expanded[end_col] = df_expanded.apply(
+        lambda row: pd.Timestamp(year=row[start_col].year, month=12, day=31) if row.name == 0 else row[end_col], axis=1
+    ) #row.name == 0 sorgt hier dafür dann wir die erste Zeile des SPells nhemen also die original Zeile, row:name > 0 sorgt unten dagegen dafür dass wir alle zeile des spells nach der ersten Ziele verewnden. 
+
+    df_expanded[start_col] = df_expanded.apply(
+        lambda row: pd.Timestamp(year=row[start_col].year + 1, month=1, day=1) if row.name > 0 else row[start_col], axis=1
+    )
+
+    # Schritt 5: Berechnen des Jahres (jahr) und des Alters (age)
+    df_expanded['jahr'] = df_expanded[start_col].dt.year
+    df_expanded['age'] = df_expanded['jahr'] - df_expanded[gebjahr_col]
+
+    # Schritt 6: Bereinigung (Entfernen der temporären Spalten)
+    df_expanded = df_expanded.drop(columns=['span_year'])
+
+    # Rückgabe des bearbeiteten DataFrames
+    return df_expanded
 
 
-def split_spells_in_one_function(df, persnr_col='persnr', spell_col='spell', start_col='begepi', end_col='endepi', gebjahr_col='gebjahr'):
+
+def split_spells_in_one_function(df, persnr_col='persnr_siab_r', spell_col='spell', start_col='begepi', end_col='endepi', gebjahr_col='gebjahr'):
     # Schritt 1: Sortieren der Daten nach den benutzerdefinierten Spalten
     df = df.sort_values(by=[persnr_col, spell_col])
 
@@ -269,4 +332,24 @@ df_split = split_spells_in_one_function(df=data, persnr_col='persnr', spell_col=
 
 # Ausgabe des bearbeiteten DataFrames
 print(df_split.head)
-'''
+
+
+# Kapitel 6: Deflation 
+def generate_cpi(df, year_col='jahr'):
+    """Generiert die CPI-Variable mit Basisjahr 2015."""
+    # Wende die CPI-Berechnung direkt auf den DataFrame an
+    df['cpi'] = df[year_col].map(lambda y: (cpi_values.get(y, np.nan) / 89.0) * 65.5 if y < 1992 else cpi_values.get(y, np.nan))
+    return df
+
+def generate_cpi(df, year_col='jahr'):
+    """Mapped jedes Jahr im DataFrame auf seinen CPI-Wert aus cpi_values."""
+    df['cpi'] = df[year_col].map(lambda y: cpi_values.get(y, np.nan))
+    return df
+
+#ich nehme an dass man hier auch kürzen kann. 
+
+def calculate_real_wage(row):
+    """Berechnet den deflationierten Lohn."""
+    return 100 * row['tentgelt_gr'] / row['cpi'] if row['cpi'] else np.nan
+
+# ich nehme an dass man diesen if clause auch einfach weglassen kann. 
