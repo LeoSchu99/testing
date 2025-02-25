@@ -1,0 +1,107 @@
+#### Unsere Configurator-Datei
+
+
+
+
+
+
+
+IAB_COLUMN_RENAME_MAP = {
+    "rtat": "rentenart",
+    "ajaz": "m_unemployment",
+    "fmsd": "familienstand",
+    "gbjavs": "alter",
+    "gevs": "weiblich",
+    "ttsc3_kldb2010": "education_kldb2010",
+    "ttsc3": "education",
+    "leat": "leistungsart",
+    "ztptgslej": "eligibility_fulfillment_y",
+    "moab": "months_ret_before_fra",
+    "mozu": "months_ret_after_nra",
+    "jv1": "earnings_lagged_1",
+    "jv2": "earnings_lagged_2",
+    "ltbyetj": "last_contribution_y",
+    "rtztmo": "rentenrechtliche_zeit",
+    "suegpt": "egpt",
+    "psegpt": "pers_egpt",
+    "byvl": "vollw_beitragszeiten",
+    "vsmo": "beitragsfreie_zeiten",
+    "ztptrtbeae": "retirement_age_agg_before_2014",
+    "ztptrtbeae_jjj": "retirement_age_y",
+    "ztptrtbeae_mm": "retirement_age_m",
+}
+
+
+IAB_D_TYPES = {
+    "rentenart": "category",
+    "familienstand": "category",
+    "alter": "Int64",
+    "weiblich": "bool",
+    "education_kldb2010": "category",
+    "education": "category",
+    "leistungsart": "category",
+    "eligibility_fulfillment_y": "Int64",
+    "months_ret_before_fra": "Int64",
+    "months_ret_after_nra": "Int64",
+    "earnings_lagged_1": "float",
+    "earnings_lagged_2": "float",
+    "last_contribution_y": "Int64",
+    "rentenrechtliche_zeit": "Int64",
+    "egpt": "float",
+    "pers_egpt": "float",
+    "vollw_beitragszeiten": "Int64",
+    "retirement_age_agg_before_2014": "float",
+    "retirement_age_y": "Int64",
+    "retirement_age_m": "Int64",
+    "beitragsfreie_zeiten": "Int64",
+    "m_unemployment": "Int64",
+    "year": "Int64",
+}
+
+
+
+cpi_values = {
+    1975: 54.5, 
+    1976: 56.8, 
+    1977: 58.9, 
+    1978: 60.5, 
+    1979: 63.0,
+    1980: 66.4, 
+    1981: 70.6, 
+    1982: 74.3, 
+    1983: 76.7, 
+    1984: 78.6,
+    1985: 80.2, 
+    1986: 80.1, 
+    1987: 80.3, 
+    1988: 81.3, 
+    1989: 83.6,
+    1990: 85.8, 
+    1991: 89.0, 
+    1992: 68.8, 
+    1993: 71.9, 
+    1994: 73.8,
+    1995: 75.1, 
+    1996: 76.1, 
+    1997: 77.6, 
+    1998: 78.3, 
+    1999: 78.8,
+    2000: 79.9, 
+    2001: 81.5, 
+    2002: 82.6, 
+    2003: 83.5, 
+    2004: 84.9,
+    2005: 86.2, 
+    2006: 87.6, 
+    2007: 89.6, 
+    2008: 91.9, 
+    2009: 92.2,
+    2010: 93.2, 
+    2011: 95.2, 
+    2012: 97.1, 
+    2013: 98.5, 
+    2014: 99.5,
+    2015: 100.0,
+    2016: 100.5, 
+    2017: 102.0
+}

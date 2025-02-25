@@ -1,0 +1,83 @@
+Notizen zum Vorgehen
+
+
+🔹 1. Vorgehensweise: Identifikation der Kernschritte
+
+Basierend auf dem bisherigen Code solltest du überlegen, welche allgemeinen Verarbeitungsschritte in deinem Fall wichtig sind. Typische Schritte für ein Data Cleaning könnten sein:
+✅ Laden der Daten
+Alle relevanten Dateien einlesen (z. B. .dta-Dateien wie in deinem Code).
+Alle Daten in einem einzigen DataFrame zusammenführen.
+
+
+✅ Umbenennen der Spalten
+Einheitliche Spaltennamen sicherstellen.
+Falls sich Spaltennamen über verschiedene Jahre hinweg unterscheiden, eine Mapping-Tabelle verwenden.
+
+
+✅ Fehlende Werte behandeln
+NaN-Werte durch sinnvolle Default-Werte ersetzen.
+Zeilen mit zu vielen fehlenden Werten ggf. löschen.
+
+
+
+✅ Datenaufbereitung & Transformation
+Werte standardisieren (z. B. Kategorien von Arbeitsstatus umkodieren).
+Löhne, Einkommen etc. inflationsbereinigt darstellen.
+
+
+
+✅ Aggregationen über den Lebenszyklus
+Durchschnittseinkommen über Zeit berechnen.
+Renteneintrittsalter bestimmen.
+Variablen über Jahre aggregieren (z. B. gleitende Durchschnitte).
+
+
+✅ Erzeugung von abgeleiteten Variablen
+Berechnung von Rentenansprüchen, Arbeitsjahren etc.
+Kombination mehrerer Variablen für neue Indikatoren.
+
+
+
+✅ Daten exportieren
+Das finale DataFrame speichern, z. B. als .pickle oder .csv.
+Sicherstellen, dass das Format für weitere Analysen geeignet ist.
+
+
+
+2. Erstellung einer flexiblen Infrastruktur
+
+Damit dein Code leicht erweiterbar bleibt, solltest du:
+Jede Verarbeitung in eine separate Funktion auslagern
+Statt alles in eine große Pipeline zu packen, mehrere kleine, wiederverwendbare Funktionen schreiben.
+Die Verarbeitungsschritte in einer zentralen Funktion zusammenführen
+Ähnlich wie clean_raw_data() im bisherigen Code.
+Diese Funktion ruft alle Cleaning-Schritte nacheinander auf.
+Functional Programming nutzen
+Eine Liste mit Verarbeitungsschritten definieren und diese systematisch auf Variablen anwenden.
+Falls eine neue Variable hinzugefügt werden soll, sollte es reichen, sie in eine Liste zu schreiben.
+
+
+
+# Datentypen
+datumsdaten für begorig endepi, begepi, und endorig
+
+
+
+
+
+# Sonstiges
+zum rauskommen aus iwelchen modu contorl + d oder control+ c 
+
+zum anzeigen der spaltennamen eines datasets: print(df_split.columns)
+
+
+NameError: name 'gebjahr' is not defined
+ChatGPT said:
+Der Fehler tritt auf, weil du den Variablennamen gebjahr ohne Anführungszeichen in der Funktion data[gebjahr] verwendest. In Python muss der Name der Spalte, die du aufrufen möchtest, als String angegeben werden.
+
+Ganze Zeile löschen: Command + backspace
+
+alles was ncoh überprüft werden muss ist mit (???) markiert
+
+
+# Nützliche stata befehle 
